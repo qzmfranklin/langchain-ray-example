@@ -1,0 +1,11 @@
+# TODO: Pin versions once it's stablized.
+#
+# A superset of the frozen versions are in requirements.frozen.txt
+beautifulsoup4
+faiss-cpu
+langchain
+numpy
+ray[default]
+ray[serve]
+requests
+sentence_transformers

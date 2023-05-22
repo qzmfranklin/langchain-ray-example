@@ -1,0 +1,17 @@
+load("//tools/build_defs/python:defs.bzl", "py_binary")
+
+py_binary(
+    name = "build",
+    srcs = [
+        "build.py",
+    ],
+    data = [
+        "data",
+    ],
+    deps = [
+        # "@pypi_langchain//:pkg",
+        "@pypi_numpy//:pkg",
+        # "@pypi_ray//:pkg",
+        "@pypi_pyyaml//:pkg",
+    ],
+)

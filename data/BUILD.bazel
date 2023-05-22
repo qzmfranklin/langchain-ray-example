@@ -1,0 +1,30 @@
+load("//tools/build_defs/aspect:defs.bzl", "write_source_files")
+
+genrule(
+    name = "download_docs",
+    outs = ["archive.tar.xz"],
+    cmd = " && ".join([
+        "echo $$PATH",
+        " ".join([
+            "wget",
+            "-e=robots=off",
+            "--recursive",
+            "--no-clobber",
+            "--page-requisites",
+            "--html-extension",
+            "--convert-links",
+            "--restrict-file-names=windows",
+            "--domains=docs.ray.io",
+            "--no-parent",
+            "https://docs.ray.io/en/master/",
+        ]),
+        "$(location @org_gnu_tar//:tar) -czJf $@ docs.ray.io",
+    ]),
+    tags = ["requires-network"],
+    tools = ["@org_gnu_tar//:tar"],
+)
+
+write_source_files(
+    name = "vendor",
+    files = {"docs.ray.io.tar.xz": "archive.tar.xz"},
+)
