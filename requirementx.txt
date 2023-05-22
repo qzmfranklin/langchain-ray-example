@@ -3,6 +3,7 @@
 # A superset of the frozen versions are in requirements.frozen.txt
 beautifulsoup4
 faiss-cpu
+filelock
 langchain
 numpy
 ray[default]

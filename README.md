@@ -92,5 +92,14 @@ correct directory prior to execution.
 ## Step 3: Start server
 
 ```bash
-./serve.py
+# References the class decorated with @ray.deployment in the serve.py script.
+serve run serve:deployment
+```
+
+**WARNING**: I can run this with a local ray cluster, not one deployed on a
+remote AKS cluster. I suspect that this is at least partially due to network
+issues, e.g., 
+```text
+2023-05-22 16:41:02,771 ERROR gcs_utils.py:213 -- Failed to connect to GCS. Please check `gcs_server.out` for more details.
+2023-05-22 16:41:02,771 WARNING utils.py:1416 -- Unable to connect to GCS at 172.31.207.130:6379. Check that (1) Ray GCS with matching version started successfully at the specified address, and (2) there is no firewall setting preventing access.
 ```

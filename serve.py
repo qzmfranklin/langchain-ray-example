@@ -1,4 +1,8 @@
-#!/usr/bin/env python3
+'''
+Don't run this script directly.
+
+See README.md for detailed instructions.
+'''
 import pathlib
 import time
 
