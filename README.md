@@ -1,11 +1,96 @@
-Loaded 6657 documents, 49856 chunks.
-Time taken: 95.84748244285583 seconds.
-Loading chunks into vector store ...
-Time taken: 245.66909646987915 seconds.
+# Search Engine with LangChain + Ray
 
-# Test Results
+Reproducing https://www.anyscale.com/blog/llm-open-source-search-engine-langchain-ray.
 
-|               | load document | load into vector store |
-| ------------- | ------------- | ---------------------- |
-| build.py      | 95.84         | 245.7                  |
-| build_fast.py |               |                        |
+## Step 1: One-time preparation
+
+- Follow through [this README](data/README.md) to create sample data.
+
+- Install Python3 dependencies.
+
+    ```bash
+    pip3 install -r requirements.txt
+    ```
+
+- Install [kubectl](https://kubernetes.io/docs/tasks/tools/#kubectl).
+
+- Install [helm](https://helm.sh/docs/intro/install/).
+
+- Get access to a Kubernetes cluster.  Make sure the `kubectl` command works.
+
+    ```bash
+    kubectl get all
+    ```
+
+- Install the KubeRay operator.
+
+    ```bash
+    helm repo add kuberay https://ray-project.github.io/kuberay-helm/
+    helm install kuberay-operator kuberay/kuberay-operator --version 0.5.0
+    ```
+
+- Install Ray cluster with the KubeRay operator.
+
+    ```bash
+    helm install raycluster kuberay/ray-cluster --version 0.5.0
+    ```
+
+    Wait for pods to start:
+
+    ```bash
+    watch -n 1 kubectl get pod
+    ```
+
+    Also, the kuberay-head-svc should be available:
+
+    ```bash
+    kubectl get service raycluster-kuberay-head-svc
+    ```
+
+- Forward Ray dashboard to local port 8265.
+
+    ```bash
+    kubectl port-forward --address 0.0.0.0 service/raycluster-kuberay-head-svc 8265:8265
+    ```
+
+    Open http://localhost:8265/ in a browser.
+
+## Step 2: Build index
+
+You may either build the index locally or with Ray.
+
+A successful run would populate the `data/.faiss_index` directory. For example:
+
+```text
+[4.0K]  data/.faiss_index
+├── [146M]  index.faiss
+└── [ 17M]  index.pkl
+```
+
+### Build the index locally
+
+```bash
+build_index.py
+```
+
+> TIP: It's OK to run this script from any directory. It relocates to the
+correct directory prior to execution.
+
+### Build the index with Ray
+
+**WARNING**: I have not successfully run this script.  It hangs at uploading the
+local working directory to the Ray cluster.  It is possibly due to the
+uploading to gcs.
+
+```bash
+build_index_with_ray.py
+```
+
+> TIP: It's OK to run this script from any directory. It relocates to the
+correct directory prior to execution.
+
+## Step 3: Start server
+
+```bash
+./serve.py
+```
