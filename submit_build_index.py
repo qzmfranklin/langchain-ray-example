@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 
+import argparse
 import asyncio
 import pathlib
 import time
@@ -11,9 +12,10 @@ from ray.job_submission import (
 
 THIS_DIR = pathlib.Path(__file__).resolve().parent
 
+def execute(args: argparse.Namespace):
+    assert isinstance(args.address, str)
 
-async def main() -> None:
-    client = JobSubmissionClient("http://127.0.0.1:8266")
+    client = JobSubmissionClient(args.address)
     job_id = client.submit_job(
         entrypoint="python build_index_with_ray.py",
         runtime_env={
@@ -23,9 +25,6 @@ async def main() -> None:
             'excludes': [
                 'data/.faiss_index',
                 'data/archive.tar.xz',
-                str(THIS_DIR / 'data/.faiss_index'),
-                str(THIS_DIR / 'data/archive.tar.xz'),
-                '/home/zhongmingqu/code/Dreizack/prod/llm/langchain/ray/search_engine/data/archive.tar.xz',
             ],
         }
     )
@@ -43,6 +42,17 @@ async def main() -> None:
             time.sleep(1)
 
     wait_until_finish(job_id)
+
+
+
+async def main():
+    parser = argparse.ArgumentParser()
+    parser.add_argument(
+        '--address',
+        default='http://localhost:8265',
+    )
+    args = parser.parse_args()
+    execute(args)
 
 
 if __name__ == '__main__':

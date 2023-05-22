@@ -2,15 +2,7 @@
 
 Reproducing https://www.anyscale.com/blog/llm-open-source-search-engine-langchain-ray.
 
-## Step 1: One-time preparation
-
-- Follow through [this README](data/README.md) to create sample data.
-
-- Install Python3 dependencies.
-
-    ```bash
-    pip3 install -r requirements.txt
-    ```
+## Step 1: Set up Ray cluster
 
 - Install [kubectl](https://kubernetes.io/docs/tasks/tools/#kubectl).
 
@@ -57,6 +49,14 @@ Reproducing https://www.anyscale.com/blog/llm-open-source-search-engine-langchai
 
 ## Step 2: Build index
 
+- Follow through [this README](data/README.md) to create sample data.
+
+- Install Python3 dependencies.
+
+    ```bash
+    pip3 install -r requirements.txt
+    ```
+
 You may either build the index locally or with Ray.
 
 A successful run would populate the `data/.faiss_index` directory. For example:
@@ -79,11 +79,11 @@ correct directory prior to execution.
 ### Build the index with Ray
 
 **WARNING**: I have not successfully run this script.  It hangs at uploading the
-local working directory to the Ray cluster.  It is possibly due to the
-uploading to gcs.
+local working directory to the Ray cluster.  It is possibly due to uploading to
+gcs.
 
 ```bash
-build_index_with_ray.py
+submit_build_index.py
 ```
 
 > TIP: It's OK to run this script from any directory. It relocates to the
